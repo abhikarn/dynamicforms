@@ -1,0 +1,13 @@
+<!--<form>-->
+<h6 class="h6-label-text">{{controls.label}}</h6>
+<my-date-picker [options]="myDatePickerOptions" [placeholder]="placeholder" (dateChanged)="onSelectionDone($event)" required></my-date-picker>
+
+<div class="error-container" style="position: absolute; top:160px">
+	<div class="error-block">
+		<div *ngIf="error">
+			<span class="error"> {{error}}</span>
+		</div>
+	</div>
+</div>
+
+<!--</form>-->

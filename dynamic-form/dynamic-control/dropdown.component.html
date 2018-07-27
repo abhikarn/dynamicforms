@@ -1,0 +1,21 @@
+<div class="form-group">
+	<div class="mrg-btm5 dropdown-select-label">
+		{{control.label}}&nbsp;
+	</div>
+	<div class="dropdown">
+		<button [class.font-change]="changeClass" class="btn btn-default btn-block dropdown-toggle selected" type="button" id="dropdownMenu1" data-toggle="dropdown"
+		 [disabled]="disableDropdown" aria-haspopup="true" aria-expanded="true">{{selectedvalue}}<span class="caret fa fa-angle-down"></span>
+      </button>
+		<ul #dropdownList class="dropdown-menu max-height-dropdwn ps-child" aria-labelledby="dropdownMenu1">
+			<div class="form-group" *ngIf="control.enableFilter && control.options.length > 1">
+				<input #filterEle type="text" class="form-control" placeholder="Search" (input)="filter($event)">
+			</div>
+			<li *ngFor="let option of optionsToDisplay">
+			<a href="javascript:void(0)" (click)="onclick(option,$event)">{{option.value}}</a>
+			</li>
+			<li *ngIf="!!optionsToDisplay && optionsToDisplay.length === 0" class="cursor-none complete-center">
+				No results found
+			</li>
+		</ul>
+	</div>
+</div>

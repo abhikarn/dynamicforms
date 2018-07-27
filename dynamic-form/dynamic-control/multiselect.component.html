@@ -1,0 +1,7 @@
+<div class="form-group" id="{{control.id}}">
+	<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>
+	<!--div class="mrg-btm5">{{controls.placeholder}}</div -->
+	<div>
+		<button *ngFor="let option of control.options" id="{{option.value}}" (click)="onclick(option,$event)" type="button" [ngClass]="getClass(option.value)">{{option.value}}</button>
+	</div>
+</div>

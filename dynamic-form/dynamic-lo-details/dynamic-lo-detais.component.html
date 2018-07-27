@@ -1,0 +1,18 @@
+<div class="search-officer-desc collapseHeight">
+    <div class="search-officer-desc-in">
+        <div class="border-custom">
+
+        </div>
+        <h3>
+            {{loanOfficerData.firstName}} (Loan Officer)
+        </h3>
+        <ul>
+            <li><i class="fa fa-envelope-o" aria-hidden="true"></i><a href="javaScript:;">{{loanOfficerData.userId}}</a></li>
+            <li><i class="fa fa-phone" aria-hidden="true"></i><a href="javaScript:;">{{loanOfficerData.mobileNo}}</a></li>
+            <li><i class="fa fa-comments-o" aria-hidden="true"></i><a href="javaScript:;">Chat now</a></li>
+        </ul>
+        <div class="lo-link">
+            <a href="javaScript:void(0);" (click)="goToLOSearch($event)">Search for a new loan officer</a>
+        </div>
+    </div>
+</div>

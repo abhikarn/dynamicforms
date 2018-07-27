@@ -1,0 +1,8 @@
+<label for="{{controls.fieldId}}" *ngIf="controls.label" class="dis-block">{{controls.label}}</label>
+<div [formGroup]="formGroup">
+	<p-multiSelect #multiSelect [options]="dropdownOptions" (onChange)="getValue($event)"></p-multiSelect>
+	<!-- <div class="selected-role dis-inline-block mrg-top10" *ngFor="let answer of selectedDropDowns">
+		{{answer.label}}
+		<i class="fa fa-times" aria-hidden="true"></i>
+	</div>	-->
+</div>

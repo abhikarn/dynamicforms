@@ -1,0 +1,458 @@
+<div *ngIf="!!control" class="question" [formGroup]="form" [ngSwitch]="control.controlType">
+	<div [attr.formArrayName]="control.controlType === 'repeater' ? 'repeater' : null">
+
+		<div *ngFor="let repeater of (control.controlType === 'repeater'  ? form.controls.repeater.controls : [1]); let i = index">
+
+			<div [attr.formGroupName]="control.controlType === 'repeater' ? i : null">
+				<div class="{{control.class}}" *ngSwitchCase="'text'" data-type="text">
+					<div class="form-group" *ngSwitchCase="'text'" data-type="text" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>
+						<md-input-container>
+							<input mdInput [value]="control.value" [id]="control.fieldId" maxlength="{{control.maxlength}}" [type]="control.type" (keypress)="onkeypress($event)"
+							    (keyup)="onkeyup($event)" (focus)="onfocus($event, control.value)" (blur)="onblur($event)" [placeholder]="control.placeholder"
+							    [formControlName]="control.id" [readonly]="control.readOnly">
+						</md-input-container>
+						<div class="pencil-edit" *ngIf="control.showEditOption"> <i class="fa fa-pencil" (click)="onClickEdit($event, control.id)" aria-hidden="true"></i> </div>
+						<div class="error-container md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="" *ngSwitchCase="'label'" data-type="label">
+					<div class="{{control.class}}" [class.hide]="control.hideElement">
+						<label class="" [attr.for]="control.id">{{ control.value || control.label }}</label>
+					</div>
+				</div>
+
+				<div class="{{control.class}} currency-input" *ngSwitchCase="'select'" data-type="select">
+					<!--<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>-->
+					<dropdown-select [control]="control" (dropdownSelect)="onDropdownSelect($event)" [class.hide]="control.hideElement" data-type="select"></dropdown-select>
+					<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="error"> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="checkToggle">
+					<div class="{{control.class}}" *ngSwitchCase="'toggle'" data-type="toggle"><span class="toggle-btn-tit">{{ control.label }}</span>
+						<div class="form-group">
+							<label class="inactive-label">{{ control.options[0].name }}</label>
+							<mat-slide-toggle #slideToggle [id]="control.fieldId" [formControlName]="control.id" (change)="onToggleChange($event)"> {{ control.options[1].name }}</mat-slide-toggle>
+						</div>
+					</div>
+				</div>
+				<div class="{{control.class}}" *ngSwitchCase="'multiselect'" data-type="multiselect">
+					<multiselect-select [formGroup]="form" [control]="control" (onMultiSelectclick)="onMultiSelectclick($event)" [class.hide]="control.hideElement"></multiselect-select>
+					<div class="error-container" *ngIf="control.showValidation" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="errorMultiSelect"> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'findatepicker'" data-type="findatepicker">
+					<findatepicker #callbackDatepicker [formGroup]="form" [controls]="control" (checktime)="checktime($event)"></findatepicker>
+					<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="error"> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="{{control.class}}" *ngSwitchCase="'datepicker'" data-type="datepicker">
+					<dynamicdatepicker #dynamicDatePicker [controls]="control" (datePickerDate)="datePickerDateControl($event)"></dynamicdatepicker>
+					<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="error"> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="{{control.class}}" *ngSwitchCase="'slider'" data-type="slider">
+					<div class="form-group">
+						<p>{{control.placeholder}}</p>
+						<input type="text" [ngModelOptions]="{standalone: true}" id="slider" [(ngModel)]="textValue" (change)="onchangeslider(prev , next)"
+						/>
+						<span class="error hide"></span>
+					</div>
+				</div>
+
+
+				<div class="{{control.class}}  currency-input" *ngSwitchCase="'phone'" data-type="phone">
+					<div class="form-group profile-contact-num" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>
+						<md-input-container>
+							<input mdInput [id]="control.fieldId" [type]="control.type" [value]="control.value" (keyup)="filterphone($event)" (blur)="onblur($event)"
+							    (keydown)="onkeydown($event)" [placeholder]="control.placeholder" [formControlName]="control.id" [readonly]="control.readOnly">
+						</md-input-container>
+						<div class="pencil-edit" *ngIf="control.showEditOption"> <i class="fa fa-pencil" (click)="onClickEdit($event, control.id)" aria-hidden="true"></i> </div>
+						<div class="error-container  md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}  currency-input" *ngSwitchCase="'dateFormat'" data-type="dateFormat">
+					<div class="form-group" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>
+						<md-input-container>
+							<input mdInput [id]="control.fieldId" [type]="control.type" [value]="control.value" (keyup)="filterDate($event)" (blur)="onblur($event)"
+							    (keydown)="onkeydown($event)" [placeholder]="control.placeholder" [formControlName]="control.id" [readonly]="control.readOnly">
+						</md-input-container>
+						<div class="pencil-edit" *ngIf="control.showEditOption"> <i class="fa fa-pencil" (click)="onClickEdit($event, control.id)" aria-hidden="true"></i> </div>
+						<div class="error-container  md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'ssnField'" data-type="ssnField">
+					<div class="form-group" *ngSwitchCase="'ssnField'" data-type="text" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>
+						<md-input-container>
+							<input mdInput [formControlName]="control.id" [value]="ssnValue" [id]="control.fieldId" ssnMask maskFull="{{control.maskFull}}"
+							    maxlength="11" [type]="control.type" (keydown)="onkeydown($event)" (blur)="onblur($event)" [placeholder]="control.placeholder"
+							/>
+							<input [value]="control.value" type="hidden" />
+						</md-input-container>
+						<span class="toggle-ssn-value" (click)="showSSN()">{{showhide}}</span>
+						<div class="pencil-edit" *ngIf="control.showEditOption"> <i class="fa fa-pencil" (click)="onClickEdit($event, control.id)" aria-hidden="true"></i> </div>
+						<div class="error-container md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'zipcode'" data-type="zipcode">
+					<div class="form-group" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<label *ngIf="!!control.label" class="" [attr.for]="control.fieldId">{{ control.label }}</label>
+						<md-input-container>
+							<input mdInput [id]="control.fieldId" [type]="control.type" [value]="control.value" (keyup)="filterZipcode($event)" (blur)="onblur($event)"
+							    (keydown)="onkeydown($event)" [placeholder]="control.placeholder" [formControlName]="control.id" validate-event="blur">
+						</md-input-container>
+
+						<!--label class="" [attr.for]="control.id">{{ control.placeholder }}</label-->
+						<div class="error-container  md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'password'" data-type="password">
+					<div class="form-group" *ngSwitchCase="'password'" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+						<md-input-container>
+							<input mdInput [id]="control.fieldId" [type]="control.type" (keypress)="onkeypress($event)" (blur)="onblur($event)" [placeholder]="control.placeholder"
+							    [formControlName]="control.id" [value]="control.value">
+						</md-input-container>
+						<div class="{{control.class}}" *ngSwitchCase="'searchInput'">
+							<div class="icon-addon addon-lg">
+								<input [type]="control.type" [id]="control.id" [placeholder]="control.placeholder" [value]="control.value" class="form-control search lo-search"
+								    [formControlName]="control.id" (keyup)="filterSearchInput($event)" (keydown)="onkeydown($event)"/>
+								<label for="search" class="lo-search-icon" rel="tooltip" title="search"></label>
+								<button class="btn lo-search-close" (click)="clearSearch()"><i class="fa fa-times" aria-hidden="true"></i></button>
+							</div>
+
+							<div class="btn-container">
+								<button type="button" [disabled]="!form.valid" class="btn btn-default" (click)="onsearch($event)">Search</button>
+							</div>
+							<div class="error-container" *ngIf="control.showValidation" style="position: absolute; top:22px">
+								<div class="error-block" *ngFor="let error of control.validations;">
+									<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+										<span class="hide" #inputerrors> {{error.message}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!--label class="" [attr.for]="control.id">{{ control.placeholder }}</label-->
+						<div class="error-container  md-input" *ngIf="control.showValidation && hideErrorMsgonFocus" style="">
+							<div class="error-block" *ngFor="let error of control.validations;">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="hide" #inputerrors> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'searchInput'" data-type="searchInput">
+					<div class="icon-addon addon-lg">
+						<input [type]="control.type" [id]="control.id" [placeholder]="control.placeholder" [value]="control.value" class="form-control search lo-search"
+						    [formControlName]="control.id" (keyup)="filterSearchInput($event)" (keyup.enter)="onsearch($event)" (keydown)="onkeydown($event)"/>
+						<label for="search" class="lo-search-icon" rel="tooltip" title="search"></label>
+						<button class="btn lo-search-close" type="button" (click)="clearSearch()"><i class="fa fa-times" aria-hidden="true"></i></button>
+					</div>
+					<div class="btn-container">
+						<button type="button" [disabled]="!form.valid" class="btn btn-default" (click)="onsearch($event)">Search</button>
+					</div>
+					<div class="error-container" *ngIf="control.showValidation" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations;">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="hide" #inputerrors> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- <div *ngSwitchCase="'select'">
+                                <div class="{{control.class}}" *ngSwitchCase="'select'">
+                                                <select class="form-control" [id]="control.id" *ngSwitchCase="'select'" [formControlName]="control.id" (change)="onchange($event)">
+                                               <option value="" disabled="true" selected="true">
+                                                               {{ control.placeholder}} 
+                                               </option>  
+                                               <option [attr.value]="answer.value" *ngFor="let answer of control.options" [attr.selected] = "answer.selected ? true : null">
+                                               {{ answer.name}} 
+                                               </option>
+                                                </select>
+                                                <div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+                                                                <div class="error-block" *ngFor="let error of control.validations">
+                                                                                <div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+                                                                                                <span class="error"> {{error.message}}</span>
+                                                                                </div>
+                                                                </div>
+                                                </div>
+                                </div>
+                </div> -->
+
+				<div class="{{control.class}}" *ngSwitchCase="'textarea'" data-type="textarea">
+					<div class="form-group" *ngSwitchCase="'textarea'">
+						<label *ngIf="!!control.label" class="textarea-label" [attr.for]="control.fieldId">{{ control.label }}</label>
+						<textarea class="form-control" [placeholder]="control.placeholder" rows="1" [id]="control.fieldId" (keypress)="onkeypress($event)"
+						    [formControlName]="control.id" (blur)="onblur($event)" (keyup)="filterMessage($event)" (change)="onchange($event)"></textarea>
+						<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:50px">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}}" *ngSwitchCase="'textarea-charcount'" data-type="textarea-charcount">
+					<div class="form-group" *ngSwitchCase="'textarea-charcount'">
+						<label class="note-count-label" [attr.for]="control.fieldId">{{ control.label }}</label>
+						<div class="flex-display textarea-wrap">
+							<textarea class="form-control" [placeholder]="control.placeholder" rows="1" [id]="control.id" (keypress)="onkeypress($event)"
+							    [formControlName]="control.id" (blur)="onblur($event)" (keyup)="filterMessage($event)" (change)="onchange($event)"></textarea>
+							<div class="char-count-section">
+								{{dynamicControlService.charCount}}/{{control.maxlength}}
+							</div>
+						</div>
+						<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:50px">
+							<div class="error-block" *ngFor="let error of control.validations">
+								<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+									<span class="error"> {{error.message}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="{{control.class}} radio-group" *ngSwitchCase="'radioBtn'" data-type="radioBtn">
+					<label *ngIf="!!control.label" class="" [attr.for]="control.fieldId">{{ control.label }}</label>
+					<radio-button-selection [control]="control" (radioBtnClick)="onRadioBtnclick($event)"></radio-button-selection>
+				</div>
+
+				<div class="radio-group" *ngSwitchCase="'radio'" data-type="radio">
+					<span class="radio" *ngFor="let answer of control.options">
+           <input type="radio" [id]="control.fieldId + answer.value" [value]="answer.value"
+               [formControlName]="control.id" [checked] = "answer.selected" (change)="onchange($event)">
+          <label [attr.for]="control.id + answer.value">{{ answer.name }}</label>
+          <div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+<div class="error-block" *ngFor="let error of control.validations">
+	<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+		<span class="error"> {{error.message}}</span>
+				</div>
+			</div>
+		</div>
+		</span>
+	</div>
+	<div class="{{control.class}}" *ngSwitchCase="'checkbox'">
+		<div class="checkbox-group" *ngSwitchCase="'checkbox'" data-type="checkbox">
+			<div class="control-group" *ngFor="let answer of control.options">
+				<label [attr.for]="control.id" class="control control-checkbox sub-text-color" [innerHTML]=answer.name> </label>
+				<input type="checkbox" [id]="control.fieldId" [value]="answer.value" [formControlName]="control.id" (click)="onchangeCheckBox($event.target.checked)">
+				<div class="control-indicator"></div>
+
+
+				<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+					<div class="error-block" *ngFor="let error of control.validations">
+						<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+							<span class="error"> {{error.message}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--
+<div class="{{control.class}}" *ngSwitchCase="'date'">
+    <div class="input-group">
+        <input class="form-control" type="text" [placeholder]="control.placeholder" [formControlName]="control.id" ngbDatepicker
+            #d="ngbDatepicker" navigation="select" />
+        <div class="input-group-addon" (click)="d.toggle()">
+            <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 0.5rem; cursor: pointer;" />
+
+        </div>
+        <div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+            <div class="error-block" *ngFor="let error of control.validations;">
+                <div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+                    <span> {{error.message}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+	<div class="{{control.class}} currency-input" *ngSwitchCase="'currency'" data-type="currency">
+		<div class="form-group" [class.hide]="control.hideElement" [class.error-fld]="control.showValidation && !form.get(control.id).valid && hideErrorMsgonFocus">
+			<label *ngIf="control.label" class="large-text-label" [attr.for]="control.fieldId">{{ control.label }}</label>
+			<md-input-container class="">
+				<input [(ngModel)]="control.value" mdInput [id]="control.fieldId" [type]="number" (keypress)="onkeypress($event)" (keyup)="onkeyup($event)"
+				    (focus)="onfocus($event, control.value)" (blur)="onblur($event)" [placeholder]="control.placeholder" [formControlName]="control.id"
+				    currencyMask [currentFormControl]="form.get(control.id)" [finx-currency-maxlength]="control.maxlength" />
+			</md-input-container>
+			<div class="error-container md-input " *ngIf="control.showValidation && hideErrorMsgonFocus " style=" ">
+				<div class="error-block " *ngFor="let error of control.validations ">
+					<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched ">
+						<span class="error "> {{error.message}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="{{control.class}} " *ngSwitchCase=" 'richEditor' " data-type="richEditor">
+		<div class="form-group has-float-label ">
+			<ckeditor [id]="control.id " [value]="control.value " [config]="{uiColor: '#9AB8F3' ,removePlugins: 'about'}
+				" (change)="onchange($event) " (blur)="onblur($event) " debounce="100 ">
+			</ckeditor>
+			<div class="error-container " *ngIf="control.showValidation && hideErrorMsgonFocus " style="position: absolute; top:22px ">
+				<div class="error-block " *ngFor="let error of control.validations ">
+					<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched ">
+						<span class="error "> {{error.message}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngSwitchCase=" 'location' " data-type="location">
+		<location [control]="control " [isValidZip]="isValidZip " (selectedLocation)="onLocationSelect($event)"></location>
+	</div>
+
+	<div class="{{control.class}} " *ngSwitchCase=" 'multidropdown' " data-type="multidropdown">
+		<div class="form-group ">
+			<multidropdown [formGroup]="form " [controls]="control " (change)="onchange($event) "></multidropdown>
+			<div class="error-container md-input " *ngIf="control.showValidation " style="position: absolute; top:45px ">
+				<div class="error-block " *ngFor="let error of control.validations ">
+					<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched ">
+						<span class="error "> {{error.message}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="input-group custom-search-form complete-center" *ngSwitchCase=" 'searchFilter' " data-type="searchFilter">
+		<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+		{{ searchVal }}
+		</button>
+		<div class="dropdown-menu search-category-menu dropdown-user ">
+			<li *ngFor="let answer of control.options "><a class="dropdown-item " (click)="setSearchKey(answer.value,answer.name) ">{{answer.name}}</a></li>
+		</div>
+		<input class="form-control " placeholder="Search in All, or choose an Entity " type="text " [value]="control.value
+				" [id]="control.fieldId " maxlength="{{control.maxlength}} " (keypress)="onkeypress($event) " (keyup)="onkeyup($event) "
+		    (focus)="onfocus($event,
+				control.value) " (blur)="onblur($event) " [placeholder]="control.placeholder " [formControlName]="control.id " [readonly]="control.readOnly ">
+		<span class="input-group-btn ">
+		<button class="btn btn-default " type="button" (click)="searchClickForm($event) ">
+             <i class="fa fa-search "></i>
+            </button>
+		</span>
+		<div class="error-container md-input " *ngIf="control.showValidation && hideErrorMsgonFocus ">
+			<div class="error-block " *ngFor="let error of control.validations ">
+				<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched ">
+					<span class="error "> {{error.message}}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="{{control.class}}" *ngSwitchCase="'repeater'">
+
+	<!--<div *ngIf="i > 0">
+		<button type="button" (click)="removeControl($event, i, form, control)" class="btn btn-primary delete-rep-btn"><i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>Remove</button>
+	</div>-->
+	<div *ngIf="i > 0" class="repeater-title">
+		<div class="col-sm-6"> Dependent information
+		</div>
+		<div class="col-sm-6" (click)="removeControl($event, i, form, control)">
+			<i class="fa fa-trash-o" aria-hidden="true"></i>
+		</div>
+	</div>
+
+	<!--<div *ngFor="let repeaterControl of control.repeater">-->
+	<!--<dynamic-control #dc [form]="repeater" [control]="repeaterControl"></dynamic-control>-->
+	<!--<dynamic-form #repeaterForm [fieldsData]='control.repeater[i]' (submitForm)="submitRepeater($event)"></dynamic-form>-->
+
+	<div class="addRepeater">
+		<!--<button  type="submit" (click)="submitRepeater($event)" class="btn btn-primary okay-rep-btn">
+			<i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>OK</button>
+		<button *ngIf="i > 0" type="button" (click)="removeControl($event, i, form, control)" class="btn btn-primary delete-rep-btn">
+			<i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>Delete</button>-->
+		<button *ngIf="i === form.controls.repeater.controls.length -1" type="button" (click)="addControl($event)" class="btn btn-primary add-rep-btn">
+			<i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>Add more</button>
+	</div>
+	<!--</div>-->
+
+
+</div>
+<div *ngSwitchCase="'input-switch'" data-type="input-switch">
+	<input-switch [formGroup]="form" [controls]="control" (onChange)="handleChange($event)"></input-switch>
+</div>
+<div class="{{control.class}} currency-input" *ngSwitchCase="'fromto'" data-type="fromto">
+					<!--<label for="{{control.fieldId}}" *ngIf="control.label">{{control.label}}</label>-->
+					<finx-from-to [control]="control" [formControl]="form.get(control.id)" [formControlName]="control.id" (fromToSelected)="onFromToSelection($event)"></finx-from-to>
+					<div class="error-container" *ngIf="control.showValidation && hideErrorMsgonFocus" style="position: absolute; top:22px">
+						<div class="error-block" *ngFor="let error of control.validations">
+							<div *ngIf="control.showValidation && form.get(control.id).hasError(error.type) && form.get(control.id).touched">
+								<span class="error"> {{error.message}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+</div>
+</div>
+</div>

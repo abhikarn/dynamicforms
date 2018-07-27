@@ -1,0 +1,31 @@
+<form novalidate [formGroup]="formGroup" class="form {{fieldsData.formClass}}" id="{{fieldsData.id}}" (ngSubmit)="submit($event)">
+	<div class="{{fieldsData.rowClass}}" *ngFor="let rows of controls">
+		<div *ngFor="let control of rows">
+			<dynamic-control [form]="formGroup" [control]="control" (keypress)="onkeypress($event)" (handleSwitchControl)="handleSwitchControl($event)"
+			 (keyupdelete)="onkeyupdelete($event, control.controlType)" (keyuppress)="onkeyup($event)" (input)="onInput($event)" (blur)="onblur($event)"
+			 (change)="onChange($event)" (toggleChange)="onToggleChange($event)" (radioBtnClick)="onRadioBtnClick($event)" (onSearchClick)="onSearchClick($event)"
+			 (selectedLocation)="onLocationSelect($event)" (filtersearchinput)="filtersearchinput($event)" (searchParam)="sendSearchParam($event)"
+			 [checkToggle]="toggleButton" [isToggleActive]="toggleValue" (onSubmitRepeater)="submitR($event)" (onDropdownSelectForm)="onDropdownSelectForm($event)"
+			 (onClear)="onResetClick($event)"  (keydown)="onKeyDown($event)"></dynamic-control>
+		</div>
+
+	</div>
+	<!--</template>-->
+	<!--<ng-container [ngTemplateOutlet]="recursiveList; context:{ $implicit: list }"></ng-container>-->
+	<div *ngIf="fieldsData.changePasswordRequired">
+		<div class="profile-change-password">
+			<a href="javaScript:void(0);" (click)="onChangePassordClick($event)">{{fieldsData.changePasswordText}}</a>
+		</div>
+	</div>
+	<div class="loginOptions clearfix" *ngIf="!fieldsData.hideButton">
+		<div class="form-group text-center">
+			<button type="submit" class="btn btn-primary submit auto-prompt bold-text go-next" [class.zipcode-btn]="carouselButtonStyle"
+			 [disabled]="!formGroup.valid" (mousedown)="onMouseDown($event)"><i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>{{fieldsData.buttonText}}</button>
+			<span class="tab-navigation-text pad-lft15">Press <b>'Enter'</b></span>
+		</div>
+		<div class="form-group text-center" *ngIf="resetRequired">
+			<button type="reset" class="btn line-btn-green submit auto-prompt bold-text go-next" (click)="onResetClick($event)">
+               <i class="fa fa-caret-right pad-rt10" aria-hidden="true"></i>{{resetText}}</button>
+		</div>
+	</div>
+</form>

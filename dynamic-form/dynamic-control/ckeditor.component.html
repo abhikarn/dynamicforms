@@ -1,0 +1,9 @@
+<ckeditor (change)="change()" (blur)="blur()" [config]="ckEditorConfig" [(ngModel)]="content">
+</ckeditor>
+<div class="error-container" *ngIf="isNotValid" style="position: absolute; top:160px">
+	<div class="error-block">
+		<div>
+			<span class="error"> *Required Field </span>
+		</div>
+	</div>
+</div>

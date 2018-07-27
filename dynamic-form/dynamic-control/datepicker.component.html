@@ -1,0 +1,11 @@
+<div class="form-group datepicker-container" id="{{controls.id}}">
+    <div class="mrg-btm5">{{controls.placeholder}}</div>
+    <div class="datepicker-position">
+        <button type="button" (click)="onclick(today,$event,0)" [ngClass]="getClass(today,1)">Today</button>
+        <button type="button" (click)="onclick(tomorrow,$event,1)" [ngClass]="getClass(tomorrow,2)">Tomorrow</button>
+        <button type="button" [ngClass]="getClass(anyDate,3)" data-placement="bottom" (click)="showPopup()" (blur)="hidePopup($event)">{{ anyDateButtonValue }}</button>
+        <p *ngIf="errorMessage" class="alert alert-danger text-center">{{errorMessage}}</p>
+        <datepicker class="popup datepicker-popup" *ngIf="showDatepicker" [(ngModel)]="anyDate" name="date" [minDate]="startDate"
+            [dateDisabled]="disabledDate" [maxDate]="maxDays" [dateDisabled]="dateDisabled" [showWeeks]="false" (selectionDone)="onSelectionDone($event)"></datepicker>
+    </div>
+</div>

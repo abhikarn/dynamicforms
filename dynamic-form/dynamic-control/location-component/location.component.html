@@ -1,0 +1,39 @@
+<div class="zipcode-information">
+    <div class="input-holder row">
+        <div class="{{options.styleClass}}" *ngIf="!options.hideZip && options.isZipFirst">
+            <md-input-container>
+                <input mdInput [id]="control.fieldId" [type]="control.type" [value]="zipCode" [placeholder]="options.zipPlaceholder" (input)="checkForLocationDetails($event)"
+                    maxlength="5">
+            </md-input-container>
+        </div>
+        <div class="{{options.styleClass}}">
+            <dropdown-select [control]="stateControl" [disableDropdown]="disableDropdown" (dropdownSelect)="OnDropdownSelect($event,
+                    'state')" data-type="select"></dropdown-select>
+        </div>
+        <div class="{{options.styleClass}}">
+            <dropdown-select *ngIf="!options.hideCity" [control]="cityControl" [disableDropdown]="!stateControl.value
+                    || disableDropdown" (dropdownSelect)="OnDropdownSelect($event, 'city')" data-type="select"></dropdown-select>
+        </div>
+        <div class="{{options.styleClass}}">
+            <dropdown-select *ngIf="!options.hideCity && !options.hideCounty" [control]="countyControl" [disableDropdown]="!cityControl.value || disableDropdown"
+                (dropdownSelect)="OnDropdownSelect($event, 'county')" data-type="select"></dropdown-select>
+        </div>
+        <div class="{{options.styleClass}}" *ngIf="!options.hideZip && !options.isZipFirst">
+            <md-input-container>
+                <input mdInput [id]="control.fieldId" [type]="control.type" [value]="zipCode" [placeholder]="options.zipPlaceholder" maxlength="5"
+                    (input)="checkForLocationDetails($event)">
+            </md-input-container>
+        </div>
+    </div>
+    <div class="alert alert-danger" *ngIf="error alert">
+        <a href="javascript:void(0)" class="close" data-dismiss="alert" aria-label="close">
+            ×
+        </a> {{error}}
+    </div>
+</div>
+<div class="loader-sect" *ngIf="showLoader">
+    <div class="loader-holder">
+        <img src="assets/images/loader-new.gif" class="pad-btm10">
+        <p>Fetching Information</p>
+    </div>
+</div>
